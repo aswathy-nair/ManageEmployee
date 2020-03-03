@@ -8,7 +8,7 @@
 
     <ImageView
         android:id="@+id/employee_photo"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/zero_dp"
         android:layout_height="wrap_content"
         android:src="@drawable/employee_profile_image"
         app:layout_constraintHorizontal_weight="1"
@@ -19,9 +19,9 @@
 
     <TextView
         android:id="@+id/employee_name"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/zero_dp"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="@dimen/name_text_size"
         android:textColor="@color/colorPrimaryDark"
         app:layout_constraintHorizontal_weight="3"
         app:layout_constraintTop_toTopOf="parent"

@@ -4,4 +4,5 @@
     <string name="title_activity_employee_detail">EmployeeDetailActivity</string>
     <string name="edit">Edit</string>
     <string name="save">Save</string>
+    <string name="validation_error_message">Edited data is invalid</string>
 </resources>

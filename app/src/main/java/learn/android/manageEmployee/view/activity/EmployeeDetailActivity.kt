@@ -1,21 +1,29 @@
 package learn.android.manageEmployee.view.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_employee_detail.*
 import kotlinx.android.synthetic.main.employee_detail.*
 import kotlinx.android.synthetic.main.employee_detail_edit.*
 import kotlinx.android.synthetic.main.employee_item.employee_name
 import learn.android.manageEmployee.R
+import learn.android.manageEmployee.data.network.core.NetworkStates
 import learn.android.manageEmployee.data.network.model.EmployeeDetails
+import learn.android.manageEmployee.data.network.model.EmployeeResponse
+import learn.android.manageEmployee.data.network.model.EmployeeUpdateResponse
+import learn.android.manageEmployee.viewmodel.AllEmployees
+import learn.android.manageEmployee.viewmodel.UpdateEmployeeDetails
 
 class EmployeeDetailActivity : AppCompatActivity() {
 
     private lateinit var employeeDetails: EmployeeDetails
+    private val logTag = EmployeeDetailActivity::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,18 +76,24 @@ class EmployeeDetailActivity : AppCompatActivity() {
     }
 
     private fun saveUpdatedEmployeeDetails() {
-       val newEmployeeDetails = createNewEmployeeDetails()
-        if(newEmployeeDetails == null){
-            Snackbar.make(employee_details_save, "Edited details are not valid", Snackbar.LENGTH_LONG)
+        val newEmployeeDetails = createNewEmployeeDetails()
+        if (newEmployeeDetails == null) {
+            Snackbar.make(
+                employee_details_save,
+                R.string.validation_error_message,
+                Snackbar.LENGTH_LONG
+            )
                 .setAction("Action", null).show()
-        }else{
+        } else {
             updateNewEmployeeDetails(newEmployeeDetails)
         }
 
     }
 
     private fun updateNewEmployeeDetails(newEmployeeDetails: EmployeeDetails) {
-
+        val updateEmployeeViewModel = ViewModelProvider(this).get(UpdateEmployeeDetails::class.java)
+        updateEmployeeViewModel.updateEmployeeDetails(newEmployeeDetails.id, newEmployeeDetails)
+            .observeForever { processResponse(it) }
     }
 
     private fun createNewEmployeeDetails(): EmployeeDetails? {
@@ -95,8 +109,22 @@ class EmployeeDetailActivity : AppCompatActivity() {
                 employeeAge,
                 employeeDetails.profile_image
             )
-            if (employeeEditedDetails == employeeDetails) return employeeEditedDetails
+            if (employeeEditedDetails != employeeDetails) return employeeEditedDetails
         }
         return null
+    }
+    private fun processResponse(response: NetworkStates<EmployeeUpdateResponse>?) {
+        when (response?.status) {
+            NetworkStates.Status.LOADING -> {
+                Log.d(logTag, "Loading")
+            }
+            NetworkStates.Status.SUCCESS -> {
+                Log.d(logTag, "responeData: ${response.data}")
+                finish()
+            }
+            NetworkStates.Status.ERROR -> {
+                Log.d(logTag, "Error: ${response.resourceError}")
+            }
+        }
     }
 }

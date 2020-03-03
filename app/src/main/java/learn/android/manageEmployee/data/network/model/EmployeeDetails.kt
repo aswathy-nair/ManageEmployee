@@ -21,6 +21,7 @@ data class EmployeeDetails(
         parcel.readInt(),
         parcel.readString()!!
     )
+
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(id)
         parcel.writeString(employee_name)
@@ -45,3 +46,5 @@ data class EmployeeDetails(
 }
 
 class EmployeeResponse():BaseResponse<EmployeeDetails>()
+class EmployeeUpdateResponse(val status: String, data: EmployeeDetails)
+class EmployeeDeleteResponse(val status: String, message: String)

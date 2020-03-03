@@ -18,12 +18,13 @@ import learn.android.manageEmployee.data.network.model.EmployeeResponse
 import learn.android.manageEmployee.view.adapter.AllEmployeeAdapter
 import learn.android.manageEmployee.viewmodel.AllEmployees
 
-const val EMPLOYEE_DETAIL_REQUEST_CODE = 1
 const val EMPLOYEE_DETAILS = "EmployeeDetails"
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var allEmployeeAdapter : AllEmployeeAdapter
+    private lateinit var allEmployeeAdapter : AllEmployeeAdapter
+    private val logTag = MainActivity::class.java.simpleName
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_all_employees)
@@ -37,21 +38,17 @@ class MainActivity : AppCompatActivity() {
         allEmployeeViewModel.getAllEmployee().observeForever { processResponse(it) }
 
         add_employee.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+            Snackbar.make(view, "TODO", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_delete -> true
             else -> super.onOptionsItemSelected(item)
@@ -61,20 +58,20 @@ class MainActivity : AppCompatActivity() {
     private fun processResponse(response: NetworkStates<EmployeeResponse>?) {
         when (response?.status) {
             NetworkStates.Status.LOADING -> {
-                Log.d("", "Loading")
+                Log.d(logTag, "Loading")
             }
             NetworkStates.Status.SUCCESS -> {
-                Log.d("VM", "responeData: ${response.data}")
+                Log.d(logTag, "responeData: ${response.data}")
                 allEmployeeAdapter.setEmployeeDetails(response.data!!.data)
             }
             NetworkStates.Status.ERROR -> {
-                Log.d("VM", "Error: ${response.resourceError}")
+                Log.d(logTag, "Error: ${response.resourceError}")
             }
         }
     }
-    val employeeClickListener = fun (employeeDetails: EmployeeDetails){
+    private val employeeClickListener = fun (employeeDetails: EmployeeDetails){
         val intent = Intent(this@MainActivity, EmployeeDetailActivity::class.java)
         intent.putExtra(EMPLOYEE_DETAILS, employeeDetails)
-        startActivityForResult(intent, EMPLOYEE_DETAIL_REQUEST_CODE)
+        startActivity(intent)
     }
 }
