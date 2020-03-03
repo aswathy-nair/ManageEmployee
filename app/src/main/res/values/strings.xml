@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ManageEmployee</string>
+    <string name="action_delete">Delete</string>
+    <string name="title_activity_employee_detail">EmployeeDetailActivity</string>
+    <string name="edit">Edit</string>
+    <string name="save">Save</string>
+</resources>
