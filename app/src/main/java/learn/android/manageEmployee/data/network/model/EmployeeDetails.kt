@@ -2,13 +2,19 @@ package learn.android.manageEmployee.data.network.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 /**
  * Created by Aswathy on 3/2/2020.
  */
+@Entity(tableName = "employee")
 data class EmployeeDetails(
+    @ColumnInfo(name = "id") @PrimaryKey
     val id: Int,
+
     val employee_name: String,
     val employee_salary: Long,
     val employee_age: Int,

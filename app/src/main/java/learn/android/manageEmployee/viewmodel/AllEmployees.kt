@@ -1,23 +1,31 @@
 package learn.android.manageEmployee.viewmodel
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import android.content.Context
+import androidx.lifecycle.*
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import learn.android.manageEmployee.data.network.core.NetworkStates
-import learn.android.manageEmployee.data.network.model.EmployeeDetails
 import learn.android.manageEmployee.data.network.model.EmployeeResponse
+import learn.android.manageEmployee.data.repository.EmployeeDetailsRemoteRepo
 import learn.android.manageEmployee.data.repository.EmployeeDetailsRepo
 
 /**
  * Created by Aswathy on 3/2/2020.
  */
-class AllEmployees : ViewModel() {
-    private val employeeDetailsRepo = EmployeeDetailsRepo()
+class AllEmployees(application: Application) : AndroidViewModel(application) {
+    private val employeeDetailsRepo = EmployeeDetailsRepo(application)
 
     fun getAllEmployee(): LiveData<NetworkStates<EmployeeResponse>> {
-        return employeeDetailsRepo.getAllEmployees()
+        var resultData: LiveData<NetworkStates<EmployeeResponse>> = MutableLiveData()
+        viewModelScope.launch {
+            var differedResponse = async {
+                employeeDetailsRepo.getAllEmployees()
+            }
+            resultData = differedResponse.await()
+        }
+        return resultData
     }
 }
 
