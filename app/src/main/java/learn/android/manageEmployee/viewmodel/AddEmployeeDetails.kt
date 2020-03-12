@@ -1,10 +1,7 @@
 package learn.android.manageEmployee.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import learn.android.manageEmployee.data.network.core.NetworkStates
 import learn.android.manageEmployee.data.network.model.EmployeeDetails
-import learn.android.manageEmployee.data.network.model.EmployeeUpdateResponse
 import learn.android.manageEmployee.data.repository.EmployeeDetailsRemoteRepo
 
 /**
@@ -13,8 +10,6 @@ import learn.android.manageEmployee.data.repository.EmployeeDetailsRemoteRepo
 class AddEmployeeDetails : ViewModel() {
     private val employeeDetailsRepo = EmployeeDetailsRemoteRepo()
 
-    fun addEmployeeDetails(employeeDetails: EmployeeDetails):
-            LiveData<NetworkStates<EmployeeUpdateResponse>> {
-        return employeeDetailsRepo.addEmployee(employeeDetails)
+    fun addEmployeeDetails(employeeDetails: EmployeeDetails){
     }
 }

@@ -1,7 +1,7 @@
 package learn.android.manageEmployee.view.activity
 
+import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -13,12 +13,8 @@ import kotlinx.android.synthetic.main.employee_detail.*
 import kotlinx.android.synthetic.main.employee_detail_edit.*
 import kotlinx.android.synthetic.main.employee_item.employee_name
 import learn.android.manageEmployee.R
-import learn.android.manageEmployee.data.network.core.NetworkStates
 import learn.android.manageEmployee.data.network.model.EmployeeDetails
-import learn.android.manageEmployee.data.network.model.EmployeeResponse
-import learn.android.manageEmployee.data.network.model.EmployeeUpdateResponse
-import learn.android.manageEmployee.viewmodel.AllEmployees
-import learn.android.manageEmployee.viewmodel.UpdateEmployeeDetails
+import learn.android.manageEmployee.viewmodel.UpdateEmployeeVM
 
 class EmployeeDetailActivity : AppCompatActivity() {
 
@@ -39,9 +35,9 @@ class EmployeeDetailActivity : AppCompatActivity() {
     private fun updateEmployeeDetails() {
         if (!::employeeDetails.isInitialized) return
 
-        employee_name.text = employeeDetails.employee_name
-        employee_age.text = employeeDetails.employee_age.toString()
-        employee_salary.text = employeeDetails.employee_salary.toString()
+        employee_name.text = employeeDetails.employeeName
+        employee_age.text = employeeDetails.employeeAge.toString()
+        employee_salary.text = employeeDetails.employeeSalary.toString()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -68,9 +64,9 @@ class EmployeeDetailActivity : AppCompatActivity() {
     private fun updateEmployeeEditDetails() {
         if (!::employeeDetails.isInitialized) return
 
-        employee_name_edit.setText(employeeDetails.employee_name)
-        employee_age_edit.setText(employeeDetails.employee_age.toString())
-        employee_salary_edit.setText(employeeDetails.employee_salary.toString())
+        employee_name_edit.setText(employeeDetails.employeeName)
+        employee_age_edit.setText(employeeDetails.employeeAge.toString())
+        employee_salary_edit.setText(employeeDetails.employeeSalary.toString())
 
         employee_details_save.setOnClickListener { saveUpdatedEmployeeDetails() }
     }
@@ -82,8 +78,7 @@ class EmployeeDetailActivity : AppCompatActivity() {
                 employee_details_save,
                 R.string.validation_error_message,
                 Snackbar.LENGTH_LONG
-            )
-                .setAction("Action", null).show()
+            ).show()
         } else {
             updateNewEmployeeDetails(newEmployeeDetails)
         }
@@ -91,9 +86,17 @@ class EmployeeDetailActivity : AppCompatActivity() {
     }
 
     private fun updateNewEmployeeDetails(newEmployeeDetails: EmployeeDetails) {
-        val updateEmployeeViewModel = ViewModelProvider(this).get(UpdateEmployeeDetails::class.java)
-        updateEmployeeViewModel.updateEmployeeDetails(newEmployeeDetails.id, newEmployeeDetails)
-            .observeForever { processResponse(it) }
+        val updateEmployeeViewModel = ViewModelProvider(this).get(UpdateEmployeeVM::class.java)
+        updateEmployeeViewModel.updateEmployeeDetails(newEmployeeDetails)
+        gotoAllEmployees(newEmployeeDetails)
+        finish()
+    }
+
+    private fun gotoAllEmployees(newEmployeeDetails: EmployeeDetails) {
+        val intent = getIntent()
+        intent.putExtra(EMPLOYEE_DETAILS, newEmployeeDetails)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 
     private fun createNewEmployeeDetails(): EmployeeDetails? {
@@ -107,24 +110,10 @@ class EmployeeDetailActivity : AppCompatActivity() {
                 employeeName,
                 employeeSalary,
                 employeeAge,
-                employeeDetails.profile_image
+                employeeDetails.profileImage
             )
             if (employeeEditedDetails != employeeDetails) return employeeEditedDetails
         }
         return null
-    }
-    private fun processResponse(response: NetworkStates<EmployeeUpdateResponse>?) {
-        when (response?.status) {
-            NetworkStates.Status.LOADING -> {
-                Log.d(logTag, "Loading")
-            }
-            NetworkStates.Status.SUCCESS -> {
-                Log.d(logTag, "responeData: ${response.data}")
-                finish()
-            }
-            NetworkStates.Status.ERROR -> {
-                Log.d(logTag, "Error: ${response.resourceError}")
-            }
-        }
     }
 }

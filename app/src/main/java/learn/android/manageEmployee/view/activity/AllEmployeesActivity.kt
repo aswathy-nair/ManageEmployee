@@ -1,5 +1,6 @@
 package learn.android.manageEmployee.view.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -12,18 +13,19 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_all_employees.*
 import kotlinx.android.synthetic.main.all_employees.*
 import learn.android.manageEmployee.R
-import learn.android.manageEmployee.data.network.core.NetworkStates
 import learn.android.manageEmployee.data.network.model.EmployeeDetails
-import learn.android.manageEmployee.data.network.model.EmployeeResponse
+import learn.android.manageEmployee.data.repository.DataResult
 import learn.android.manageEmployee.view.adapter.AllEmployeeAdapter
-import learn.android.manageEmployee.viewmodel.AllEmployees
+import learn.android.manageEmployee.viewmodel.AllEmployeesVM
 
 const val EMPLOYEE_DETAILS = "EmployeeDetails"
+const val DETAILS_REQUESTCODE = 1000
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var allEmployeeAdapter : AllEmployeeAdapter
+    private lateinit var allEmployeeAdapter: AllEmployeeAdapter
     private val logTag = MainActivity::class.java.simpleName
+    private lateinit var allEmployeeViewModel: AllEmployeesVM
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +36,8 @@ class MainActivity : AppCompatActivity() {
         all_employee_view.adapter = allEmployeeAdapter
         all_employee_view.layoutManager = LinearLayoutManager(this)
 
-        val allEmployeeViewModel = ViewModelProvider(this).get(AllEmployees::class.java)
-        allEmployeeViewModel.getAllEmployee().observeForever { processResponse(it) }
+        allEmployeeViewModel = ViewModelProvider(this).get(AllEmployeesVM::class.java)
+        allEmployeeViewModel.allEmployeesDetails.observeForever { processResponse(it) }
 
         add_employee.setOnClickListener { view ->
             Snackbar.make(view, "TODO", Snackbar.LENGTH_LONG)
@@ -55,23 +57,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun processResponse(response: NetworkStates<EmployeeResponse>?) {
+    private fun processResponse(response: DataResult<List<EmployeeDetails>>?) {
         when (response?.status) {
-            NetworkStates.Status.LOADING -> {
+            DataResult.Status.LOADING -> {
                 Log.d(logTag, "Loading")
             }
-            NetworkStates.Status.SUCCESS -> {
+            DataResult.Status.SUCCESS -> {
                 Log.d(logTag, "responeData: ${response.data}")
-                allEmployeeAdapter.setEmployeeDetails(response.data!!.data)
+                allEmployeeAdapter.setEmployeeDetails(response.data!!)
             }
-            NetworkStates.Status.ERROR -> {
-                Log.d(logTag, "Error: ${response.resourceError}")
+            DataResult.Status.ERROR -> {
+                Log.d(logTag, "Error: ${response.error?.message}")
             }
         }
     }
-    private val employeeClickListener = fun (employeeDetails: EmployeeDetails){
+
+    private val employeeClickListener = fun(employeeDetails: EmployeeDetails) {
         val intent = Intent(this@MainActivity, EmployeeDetailActivity::class.java)
         intent.putExtra(EMPLOYEE_DETAILS, employeeDetails)
-        startActivity(intent)
+        startActivityForResult(intent, DETAILS_REQUESTCODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == DETAILS_REQUESTCODE && resultCode == Activity.RESULT_OK) {
+            allEmployeeViewModel.getAllEmployee()
+        }
     }
 }

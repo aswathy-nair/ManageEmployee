@@ -15,7 +15,7 @@ abstract class EmployeeDatabase : RoomDatabase() {
 
     companion object {
 
-        const val DATABASE_NAME = "employee_db"
+        private const val DATABASE_NAME = "employee_db"
 
         @Volatile
         private var INSTANCE: EmployeeDatabase? = null

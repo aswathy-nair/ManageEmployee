@@ -15,10 +15,22 @@ data class EmployeeDetails(
     @ColumnInfo(name = "id") @PrimaryKey
     val id: Int,
 
-    val employee_name: String,
-    val employee_salary: Long,
-    val employee_age: Int,
-    val profile_image: String
+    @ColumnInfo(name = "employee_name")
+    @SerializedName("employee_name")
+    val employeeName: String,
+
+    @ColumnInfo(name = "employee_salary")
+    @SerializedName("employee_salary")
+    val employeeSalary: Long,
+
+    @ColumnInfo(name = "employee_age")
+    @SerializedName("employee_age")
+    val employeeAge: Int,
+
+    @ColumnInfo(name = "profile_image")
+    @SerializedName("profile_image")
+    val profileImage: String
+
 ): Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
@@ -30,10 +42,10 @@ data class EmployeeDetails(
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(id)
-        parcel.writeString(employee_name)
-        parcel.writeLong(employee_salary)
-        parcel.writeInt(employee_age)
-        parcel.writeString(profile_image)
+        parcel.writeString(employeeName)
+        parcel.writeLong(employeeSalary)
+        parcel.writeInt(employeeAge)
+        parcel.writeString(profileImage)
     }
 
     override fun describeContents(): Int {
@@ -51,6 +63,5 @@ data class EmployeeDetails(
     }
 }
 
-class EmployeeResponse():BaseResponse<EmployeeDetails>()
 class EmployeeUpdateResponse(val status: String, data: EmployeeDetails)
 class EmployeeDeleteResponse(val status: String, message: String)

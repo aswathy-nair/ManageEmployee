@@ -1,10 +1,7 @@
 package learn.android.manageEmployee.data.network.api
 
-import learn.android.manageEmployee.data.network.core.HttpClient
-import learn.android.manageEmployee.data.network.model.EmployeeDeleteResponse
-import learn.android.manageEmployee.data.network.model.EmployeeDetails
-import learn.android.manageEmployee.data.network.model.EmployeeResponse
-import learn.android.manageEmployee.data.network.model.EmployeeUpdateResponse
+import learn.android.manageEmployee.data.network.core.RetrofitClient
+import learn.android.manageEmployee.data.network.model.*
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -13,13 +10,13 @@ import retrofit2.http.*
  */
 
 class EmployeeApi() {
-    val employeeApi = HttpClient.retrofit.create(GetAllEmployees::class.java)
+    val employeeApi = RetrofitClient.retrofit.create(GetAllEmployees::class.java)
 }
 
 interface GetAllEmployees {
 
     @GET("employees")
-    fun getAllEmployees(): Call<EmployeeResponse>
+    fun getAllEmployees(): Call<BaseResponse<List<EmployeeDetails>>>
 
     @PUT("update/{id}")
     fun updateEmployeeDetails(@Path("id") id: Int, @Body employeeDetails: EmployeeDetails):

@@ -4,7 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import learn.android.manageEmployee.data.network.core.NetworkStates
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import learn.android.manageEmployee.data.network.model.EmployeeDetails
 import learn.android.manageEmployee.data.network.model.EmployeeUpdateResponse
 import learn.android.manageEmployee.data.repository.EmployeeDetailsRepo
@@ -12,13 +14,12 @@ import learn.android.manageEmployee.data.repository.EmployeeDetailsRepo
 /**
  * Created by Aswathy on 3/3/2020.
  */
-class UpdateEmployeeDetails(application: Application) : AndroidViewModel(application) {
+class UpdateEmployeeVM(application: Application) : AndroidViewModel(application) {
     private val employeeDetailsRepo = EmployeeDetailsRepo(application)
 
-    fun updateEmployeeDetails(
-        id: Int,
-        employeeDetails: EmployeeDetails
-    ): LiveData<NetworkStates<EmployeeUpdateResponse>> {
-        return employeeDetailsRepo.updateEmployee(id, employeeDetails)
+    fun updateEmployeeDetails(employeeDetails: EmployeeDetails){
+        viewModelScope.launch (Dispatchers.IO){
+             employeeDetailsRepo.updateEmployee(employeeDetails)
+        }
     }
 }

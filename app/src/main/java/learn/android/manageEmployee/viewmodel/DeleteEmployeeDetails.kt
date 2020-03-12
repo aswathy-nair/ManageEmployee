@@ -1,9 +1,6 @@
 package learn.android.manageEmployee.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import learn.android.manageEmployee.data.network.core.NetworkStates
-import learn.android.manageEmployee.data.network.model.EmployeeDeleteResponse
 import learn.android.manageEmployee.data.repository.EmployeeDetailsRemoteRepo
 
 /**
@@ -12,7 +9,6 @@ import learn.android.manageEmployee.data.repository.EmployeeDetailsRemoteRepo
 class DeleteEmployeeDetails : ViewModel() {
     private val employeeDetailsRepo = EmployeeDetailsRemoteRepo()
 
-    fun deleteEmployeeDetails(id: Int): LiveData<NetworkStates<EmployeeDeleteResponse>> {
-        return employeeDetailsRepo.deleteEmployee(id)
+    fun deleteEmployeeDetails(id: Int) {
     }
 }

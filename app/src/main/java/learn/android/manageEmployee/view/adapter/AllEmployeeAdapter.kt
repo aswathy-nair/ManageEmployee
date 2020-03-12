@@ -32,7 +32,7 @@ class AllEmployeeAdapter(
     override fun getItemCount(): Int  = employeeDetails.size
 
     override fun onBindViewHolder(holder: EmployeeViewHolder, position: Int) {
-        holder.itemView.employee_name.text = employeeDetails[position].employee_name
+        holder.itemView.employee_name.text = employeeDetails[position].employeeName
         holder.itemView.setOnClickListener{employeeClickListener(employeeDetails[position])}
     }
     fun setEmployeeDetails(employeeDetails: List<EmployeeDetails>) {
