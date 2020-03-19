@@ -1,6 +1,5 @@
 package learn.android.manageEmployee.data.database
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
 import learn.android.manageEmployee.data.network.model.EmployeeDetails

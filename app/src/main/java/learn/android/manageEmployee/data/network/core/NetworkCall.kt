@@ -19,7 +19,7 @@ class NetworkCall<T> {
         try {
             val response = this.call.clone().execute()
             result = processResponse(response)
-        }catch (exception: Exception){
+        } catch (exception: Exception) {
             result = DataResult.error(Error(exception.message))
             exception.printStackTrace()
         }
@@ -27,16 +27,15 @@ class NetworkCall<T> {
         return result
     }
 
-    private fun <R> processResponse(response: Response<T>): DataResult<R> {
-        return if (response.isSuccessful) {
-            val data = response.body() as BaseResponse<R>
+    private fun <R> processResponse(response: Response<T>): DataResult<R> =
+        if (response.isSuccessful && response.body() != null) {
+            val data: BaseResponse<R> = response.body() as BaseResponse<R>
             DataResult.success(data.data)
         } else {
             DataResult.error(
                 ErrorHandle.parseError(response.errorBody())
             )
         }
-    }
 
     fun cancel() {
         if (::call.isInitialized) {

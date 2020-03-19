@@ -19,7 +19,6 @@ import learn.android.manageEmployee.viewmodel.UpdateEmployeeVM
 class EmployeeDetailActivity : AppCompatActivity() {
 
     private lateinit var employeeDetails: EmployeeDetails
-    private val logTag = EmployeeDetailActivity::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

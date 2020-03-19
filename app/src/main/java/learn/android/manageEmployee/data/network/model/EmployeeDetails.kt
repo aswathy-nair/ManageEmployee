@@ -62,6 +62,3 @@ data class EmployeeDetails(
         }
     }
 }
-
-class EmployeeUpdateResponse(val status: String, data: EmployeeDetails)
-class EmployeeDeleteResponse(val status: String, message: String)

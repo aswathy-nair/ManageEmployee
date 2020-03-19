@@ -28,10 +28,11 @@ object RetrofitClient {
             .addInterceptor(httpLoggingInterceptor)
             .build()
 
+    private val converterFactory: GsonConverterFactory = GsonConverterFactory.create()
 
      val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl(baseUrl)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(converterFactory)
             .client(okHttpClient)
             .build()
 

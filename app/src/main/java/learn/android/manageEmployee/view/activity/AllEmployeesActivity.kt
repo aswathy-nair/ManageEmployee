@@ -21,11 +21,12 @@ import learn.android.manageEmployee.viewmodel.AllEmployeesVM
 const val EMPLOYEE_DETAILS = "EmployeeDetails"
 const val DETAILS_REQUESTCODE = 1000
 
-class MainActivity : AppCompatActivity() {
+class AllEmployeesActivity : AppCompatActivity() {
 
     private lateinit var allEmployeeAdapter: AllEmployeeAdapter
-    private val logTag = MainActivity::class.java.simpleName
-    private lateinit var allEmployeeViewModel: AllEmployeesVM
+    private val logTag = AllEmployeesActivity::class.java.simpleName
+
+    lateinit var allEmployeeViewModel: AllEmployeesVM
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,7 +74,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val employeeClickListener = fun(employeeDetails: EmployeeDetails) {
-        val intent = Intent(this@MainActivity, EmployeeDetailActivity::class.java)
+        val intent = Intent(this@AllEmployeesActivity, EmployeeDetailActivity::class.java)
         intent.putExtra(EMPLOYEE_DETAILS, employeeDetails)
         startActivityForResult(intent, DETAILS_REQUESTCODE)
     }
