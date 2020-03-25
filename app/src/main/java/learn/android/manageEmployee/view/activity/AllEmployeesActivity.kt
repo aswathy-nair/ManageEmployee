@@ -12,11 +12,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_all_employees.*
 import kotlinx.android.synthetic.main.all_employees.*
+import learn.android.manageEmployee.ManageEmployeeApplication
 import learn.android.manageEmployee.R
 import learn.android.manageEmployee.data.network.model.EmployeeDetails
 import learn.android.manageEmployee.data.repository.DataResult
 import learn.android.manageEmployee.view.adapter.AllEmployeeAdapter
 import learn.android.manageEmployee.viewmodel.AllEmployeesVM
+import learn.android.manageEmployee.viewmodel.ViewModelFactory
+import javax.inject.Inject
 
 const val EMPLOYEE_DETAILS = "EmployeeDetails"
 const val DETAILS_REQUESTCODE = 1000
@@ -28,16 +31,23 @@ class AllEmployeesActivity : AppCompatActivity() {
 
     lateinit var allEmployeeViewModel: AllEmployeesVM
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory<AllEmployeesVM>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_all_employees)
         setSupportActionBar(toolbar)
 
+        ManageEmployeeApplication.appComponent.inject(this)
+
+
         allEmployeeAdapter = AllEmployeeAdapter(this, employeeClickListener)
         all_employee_view.adapter = allEmployeeAdapter
         all_employee_view.layoutManager = LinearLayoutManager(this)
 
-        allEmployeeViewModel = ViewModelProvider(this).get(AllEmployeesVM::class.java)
+
+        allEmployeeViewModel = ViewModelProvider(this, viewModelFactory).get(AllEmployeesVM::class.java)
         allEmployeeViewModel.allEmployeesDetails.observeForever { processResponse(it) }
 
         add_employee.setOnClickListener { view ->

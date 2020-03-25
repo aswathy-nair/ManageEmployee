@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import learn.android.manageEmployee.ManageEmployeeApplication
 import learn.android.manageEmployee.data.network.model.EmployeeDetails
 import learn.android.manageEmployee.data.repository.DataResult
 import learn.android.manageEmployee.data.repository.EmployeeDetailsRepo
@@ -14,14 +13,12 @@ import javax.inject.Inject
 /**
  * Created by Aswathy on 3/2/2020.
  */
-class AllEmployeesVM: ViewModel() {
+class AllEmployeesVM @Inject constructor(private val employeeDetailsRepo: EmployeeDetailsRepo) :
+    ViewModel() {
 
-    @Inject
-    lateinit var employeeDetailsRepo: EmployeeDetailsRepo
     lateinit var allEmployeesDetails: LiveData<DataResult<List<EmployeeDetails>>>
 
     init {
-        ManageEmployeeApplication.appComponent.inject(this)
         getAllEmployee()
     }
 

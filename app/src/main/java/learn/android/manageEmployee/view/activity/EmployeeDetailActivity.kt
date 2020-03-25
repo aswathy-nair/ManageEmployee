@@ -12,18 +12,29 @@ import kotlinx.android.synthetic.main.activity_employee_detail.*
 import kotlinx.android.synthetic.main.employee_detail.*
 import kotlinx.android.synthetic.main.employee_detail_edit.*
 import kotlinx.android.synthetic.main.employee_item.employee_name
+import learn.android.manageEmployee.ManageEmployeeApplication
 import learn.android.manageEmployee.R
 import learn.android.manageEmployee.data.network.model.EmployeeDetails
+import learn.android.manageEmployee.viewmodel.AllEmployeesVM
 import learn.android.manageEmployee.viewmodel.UpdateEmployeeVM
+import learn.android.manageEmployee.viewmodel.ViewModelFactory
+import javax.inject.Inject
 
 class EmployeeDetailActivity : AppCompatActivity() {
 
     private lateinit var employeeDetails: EmployeeDetails
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory<UpdateEmployeeVM>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_employee_detail)
         setSupportActionBar(toolbar)
+
+        ManageEmployeeApplication.appComponent.inject(this)
+
+
         val receivedEmployeeData = intent.getParcelableExtra<EmployeeDetails>(EMPLOYEE_DETAILS)
         receivedEmployeeData?.let { employeeDetails = receivedEmployeeData }
 
@@ -85,7 +96,8 @@ class EmployeeDetailActivity : AppCompatActivity() {
     }
 
     private fun updateNewEmployeeDetails(newEmployeeDetails: EmployeeDetails) {
-        val updateEmployeeViewModel = ViewModelProvider(this).get(UpdateEmployeeVM::class.java)
+        val updateEmployeeViewModel =
+            ViewModelProvider(this, viewModelFactory).get(UpdateEmployeeVM::class.java)
         updateEmployeeViewModel.updateEmployeeDetails(newEmployeeDetails)
         gotoAllEmployees(newEmployeeDetails)
         finish()
